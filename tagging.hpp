@@ -100,6 +100,6 @@ namespace std
     };
 }
 
-#define tag(_tag_name, ...) using _tag_name = typename multiple_inheritance<__VA_ARGS__>::type;
+#define tag(_tag_name, ...) using _tag_name = typename std::multiple_inheritance<__VA_ARGS__>::type;
 template<typename _tag, typename _type>
-concept contains = container<_type, _tag>::value;
+concept contains = std::container<_type, _tag>::value;
