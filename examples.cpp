@@ -1,20 +1,10 @@
-#include "tagging"
+#include "tagging.hpp"
 
-tag(natural_numbers, unsigned short, unsigned int, unsigned long, unsigned long long);
-tag(whole_numbers, natural_numbers, short, int, long, long long);
-tag(numbers, whole_numbers, float, double);
-tag(char_types, char, unsigned char, signed char);
-tag(raw_types, numbers, char_types, bool);
-
-template<typename T>
-concept is_number = contains<numbers, T>;
-struct nums;
-
-tag(ext_numbers, numbers, is_number);
-
-template<typename T>
-requires contains<ext_numbers, T>
-bool is_num(const T& t)
+class my_class
 {
-    return true;
+public:
+    static constexpr std::tag my_tag("my_id");
 }
+
+template<typename T>
+concept my_concept = (T::my_tag == "my_id");
