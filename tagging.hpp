@@ -10,6 +10,13 @@ namespace std
         constexpr string_view id;
     public:
         consteval tag(const char* c) : id(c) {}
+        consteval tag(const tag& other) : id(other.get_id()) {}
+        consteval string_view get_id() const {return id;}
+        consteval tag& operator=(const tag& other)
+        {
+            this->id = other.get_id();
+            return *this;
+        }
         consteval bool operator==(const char* c) const
         {
             return id == c;
