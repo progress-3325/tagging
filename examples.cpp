@@ -1,4 +1,4 @@
-#include "tagging"
+#include "tagging.hpp"
 
 tag(natural_numbers, unsigned short, unsigned int, unsigned long, unsigned long long);
 tag(whole_numbers, natural_numbers, short, int, long, long long);
