@@ -7,7 +7,7 @@ namespace tag
 	struct type_tag_list;
 
 	template<typename check_type, typename type_list>
-	struct container {static_assert(std::is_same_v<type_list, type_tag_list>, "second template parameter of a container must be a tag type list!") };
+	struct container { static_assert(std::is_same_v<type_list, type_tag_list>, "second template parameter of a container must be a type tag list!"); };
 
 	template<typename check_type>
 	struct container<check_type, type_tag_list<>> : std::false_type {};
@@ -82,6 +82,9 @@ namespace tag
 		using merged = typename inherit_list<typename to_tag<Args>::type...>::type;
 		using type   = typename deduplicate<merged>::type;
 	};
+
+	template<typename... Args>
+	using merge_tags_and_types_t = typename merge_tags_and_types<Args...>::type;
 
 	template<typename ttl, typename check_type>
 	concept contains = container<check_type, ttl>::value;
