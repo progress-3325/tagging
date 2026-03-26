@@ -7,7 +7,7 @@ namespace tag
 	struct type_tag_list;
 
 	template<typename check_type, typename type_list>
-	struct container { static_assert(std::is_same_v<type_list, type_tag_list>, "second template parameter of a container must be a type tag list!"); };
+	struct container { static_assert(!std::is_same_v<type_list, type_tag_list>, "second template parameter of a container must be a type tag list!"); };
 
 	template<typename check_type>
 	struct container<check_type, type_tag_list<>> : std::false_type {};
@@ -33,14 +33,8 @@ namespace tag
 	template<typename... ttl1, typename... ttl2, typename... other_type_lists>
 	struct inherit_list<type_tag_list<ttl1...>, type_tag_list<ttl2...>, other_type_lists...>
 	{
-		using type = typename inherit_list<type_tag_list<ttl1..., ttl2...>, other_type_lists...>::type;
+		using type = inherit_list_t<type_tag_list<ttl1..., ttl2...>, other_type_lists...>;
 	};
-
-	template<typename ttl>
-	struct is_tag : std::false_type {};
-
-	template<typename... ttl_contents>
-	struct is_tag<type_tag_list<ttl_contents...>> : std::true_type {};
 
 	template<typename... contents>
 	struct to_tag
@@ -54,6 +48,9 @@ namespace tag
 		using type = type_tag_list<contents...>;
 	};
 
+	template<typename... contents>
+	using to_tag_t = typename to_tag<type_tag_list<contents...>>::type;
+
 	template<typename check_type, typename ttl>
 	struct push_back_if_absent;
 
@@ -62,6 +59,9 @@ namespace tag
 	{
 		using type = std::conditional_t<container<check_type, type_tag_list<ttl_contents...>>::value, type_tag_list<ttl_contents...>, type_tag_list<ttl_contents..., check_type>>;
 	};
+
+	template<typename check_type, typename ttl>
+	using push_back_if_absent_t = typename push_back_if_absent<check_type, ttl>::type;
 
 	template<typename T>
 	struct deduplicate
@@ -72,15 +72,18 @@ namespace tag
 	template<typename ttl_head, typename... ttl_rest>
 	struct deduplicate<type_tag_list<ttl_head, ttl_rest...>>
 	{
-		using deduped_rest = typename deduplicate<type_tag_list<ttl_rest...>>::type;
-		using type         = typename push_back_if_absent<ttl_head, deduped_rest>::type;
+		using deduped_rest = deduplicate_t<type_tag_list<ttl_rest...>>;
+		using type         = push_back_if_absent_t<ttl_head, deduped_rest>;
 	};
+
+	template<typename T>
+	using deduplicate_t = typename deduplicate<T>::type;
 
 	template<typename... Args>
 	struct merge_tags_and_types
 	{
-		using merged = typename inherit_list<typename to_tag<Args>::type...>::type;
-		using type   = typename deduplicate<merged>::type;
+		using merged = inherit_list_t<to_tag_t<Args>...>;
+		using type   = deduplicate_t<merged>;
 	};
 
 	template<typename... Args>
