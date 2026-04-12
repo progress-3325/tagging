@@ -33,9 +33,12 @@ namespace tag
 	template<typename... ttl1, typename... ttl2, typename... other_type_lists>
 	struct inherit_list<type_tag_list<ttl1...>, type_tag_list<ttl2...>, other_type_lists...>
 	{
-		using type = inherit_list_t<type_tag_list<ttl1..., ttl2...>, other_type_lists...>;
+		using type = inherit_list<type_tag_list<ttl1..., ttl2...>, other_type_lists...>::type;
 	};
 
+	template<typename... ttl>
+	using inherit_list_t = inherit_list<ttl>::type;
+	
 	template<typename... contents>
 	struct to_tag
 	{
