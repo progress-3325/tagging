@@ -37,7 +37,7 @@ namespace tag
 	};
 
 	template<typename... ttl>
-	using inherit_list_t = inherit_list<ttl>::type;
+	using inherit_list_t = typename inherit_list<ttl...>::type;
 	
 	template<typename... contents>
 	struct to_tag
@@ -52,7 +52,7 @@ namespace tag
 	};
 
 	template<typename... contents>
-	using to_tag_t = typename to_tag<type_tag_list<contents...>>::type;
+	using to_tag_t = typename to_tag<contents...>::type;
 
 	template<typename check_type, typename ttl>
 	struct push_back_if_absent;
