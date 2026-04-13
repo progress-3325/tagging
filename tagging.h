@@ -72,15 +72,15 @@ namespace tag
 		using type = type_tag_list<>;
 	};
 
+	template<typename T>
+	using deduplicate_t = typename deduplicate<T>::type;
+
 	template<typename ttl_head, typename... ttl_rest>
 	struct deduplicate<type_tag_list<ttl_head, ttl_rest...>>
 	{
 		using deduped_rest = deduplicate_t<type_tag_list<ttl_rest...>>;
 		using type         = push_back_if_absent_t<ttl_head, deduped_rest>;
 	};
-
-	template<typename T>
-	using deduplicate_t = typename deduplicate<T>::type;
 
 	template<typename... Args>
 	struct merge_tags_and_types
